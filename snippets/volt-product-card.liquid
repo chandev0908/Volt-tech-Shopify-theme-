@@ -1,0 +1,125 @@
+{%- comment -%}
+  Renders a Volt product card.
+  Usage:
+    {% render 'volt-product-card', product: product, thirty_days_ago: thirty_days_ago %}
+  Accepts:
+    - product {Object} — Shopify product object (required)
+    - thirty_days_ago {Number} — Unix timestamp for "New" badge detection (optional)
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+
+  assign has_sale = false
+  if current_variant.compare_at_price > current_variant.price
+    assign has_sale = true
+  endif
+
+  assign product_is_new = false
+  if thirty_days_ago == blank
+    assign thirty_days_ago = 'now' | date: '%s' | minus: 2592000
+  endif
+  assign product_timestamp = product.created_at | date: '%s'
+  if product_timestamp > thirty_days_ago
+    assign product_is_new = true
+  endif
+
+  assign spec_label = product.metafields.specs.processor.value
+  if spec_label == blank
+    assign spec_label = product.metafields.specs.ram.value
+  endif
+  if spec_label == blank
+    assign spec_label = product.product_type
+  endif
+-%}
+
+<article class="volt-card" aria-label="{{ product.title | escape }}">
+
+  {%- comment -%} Image link {%- endcomment -%}
+  <a href="{{ product.url }}" class="volt-card__image-wrap" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_image != blank -%}
+      <img
+        class="volt-card__img"
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        srcset="
+          {{ product.featured_image | image_url: width: 400 }} 400w,
+          {{ product.featured_image | image_url: width: 600 }} 600w,
+          {{ product.featured_image | image_url: width: 800 }} 800w
+        "
+        sizes="(max-width: 768px) 44vw, (max-width: 1280px) 25vw, 300px"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        width="{{ product.featured_image.width }}"
+        height="{{ product.featured_image.height }}"
+        loading="lazy"
+      >
+    {%- else -%}
+      <div class="volt-card__img-placeholder" aria-hidden="true">VOLT</div>
+    {%- endif -%}
+    <div class="volt-card__overlay" aria-hidden="true"></div>
+  </a>
+
+  {%- comment -%} Badge {%- endcomment -%}
+  <div class="volt-card__badge" aria-hidden="true">
+    {%- if product.available == false -%}
+      <span class="volt-badge volt-badge--soldout">Sold Out</span>
+    {%- elsif has_sale -%}
+      <span class="volt-badge volt-badge--sale">Sale</span>
+    {%- elsif product_is_new -%}
+      <span class="volt-badge volt-badge--new">New</span>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Wishlist {%- endcomment -%}
+  <button
+    class="volt-card__wishlist"
+    type="button"
+    data-wishlist-btn
+    data-product-id="{{ product.id }}"
+    aria-label="Add {{ product.title | escape }} to wishlist"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </button>
+
+  {%- comment -%} Body {%- endcomment -%}
+  <div class="volt-card__body">
+    {%- if product.vendor != blank -%}
+      <p class="volt-card__brand">{{ product.vendor | escape }}</p>
+    {%- endif -%}
+
+    <a class="volt-card__name" href="{{ product.url }}">{{ product.title | escape }}</a>
+
+    {%- if spec_label != blank -%}
+      <p class="volt-card__subtitle">{{ spec_label | escape }}</p>
+    {%- endif -%}
+
+    <div class="volt-card__footer">
+      <div class="volt-card__prices">
+        <span class="volt-card__price">{{ current_variant.price | money }}</span>
+        {%- if has_sale -%}
+          <span class="volt-card__compare">{{ current_variant.compare_at_price | money }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if product.available -%}
+        <form
+          action="{{ routes.cart_add_url }}"
+          method="post"
+          class="volt-card__add-form"
+        >
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button
+            type="submit"
+            class="volt-card__add"
+            aria-label="Add {{ product.title | escape }} to cart"
+          >+</button>
+        </form>
+      {%- else -%}
+        <button class="volt-card__add volt-card__add--soldout" disabled aria-label="Sold out">—</button>
+      {%- endif -%}
+    </div>
+  </div>
+
+</article>
