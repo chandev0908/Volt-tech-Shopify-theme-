@@ -1,0 +1,435 @@
+/* ─── Volt Footer ─────────────────────────────────────────────────────────── */
+
+.volt-footer {
+  background: var(--volt-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ─── Top: brand + link columns ─────────────────── */
+
+.volt-footer__top {
+  padding: 72px 0 56px;
+}
+
+.volt-footer__grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr 1fr;
+  gap: 48px;
+  align-items: flex-start;
+}
+
+/* ─── Brand column ───────────────────────────────── */
+
+.volt-footer__logo {
+  font-family: var(--volt-font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: -1px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  line-height: 1;
+}
+
+.volt-footer__logo-v {
+  color: var(--volt-blue);
+}
+
+.volt-footer__logo-dot {
+  color: var(--volt-cyan);
+  font-size: 30px;
+  line-height: 0;
+  position: relative;
+  top: 2px;
+}
+
+.volt-footer__tagline {
+  font-family: var(--volt-font-body);
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.42);
+  margin-top: 14px;
+  max-width: 220px;
+}
+
+/* Social icons (wraps Dawn's .list-social output) */
+.volt-footer__social {
+  margin-top: 24px;
+}
+
+.volt-footer__social .list-social {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.volt-footer__social .list-social__link {
+  width: 34px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--volt-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--volt-transition);
+  color: transparent;
+}
+
+.volt-footer__social .list-social__link:hover {
+  background: rgba(0, 102, 255, 0.12);
+  border-color: var(--volt-blue);
+}
+
+.volt-footer__social .list-social__link .icon {
+  width: 16px;
+  height: 16px;
+  fill: rgba(255, 255, 255, 0.45);
+  transition: fill var(--volt-transition);
+}
+
+.volt-footer__social .list-social__link:hover .icon {
+  fill: #ffffff;
+}
+
+/* ─── Link columns ───────────────────────────────── */
+
+.volt-footer__col-heading {
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.32);
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.volt-footer__links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.volt-footer__link {
+  font-family: var(--volt-font-body);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color var(--volt-transition);
+  display: inline-block;
+}
+
+.volt-footer__link:hover {
+  color: #ffffff;
+}
+
+.volt-footer__col-text {
+  font-family: var(--volt-font-body);
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.volt-footer__col-text a {
+  color: var(--volt-blue);
+}
+
+.volt-footer__col-text a:hover {
+  color: var(--volt-cyan);
+}
+
+/* ─── Newsletter band ────────────────────────────── */
+
+.volt-footer__newsletter {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 44px 0;
+  position: relative;
+}
+
+/* Accent bar on left */
+.volt-footer__newsletter::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--volt-blue), var(--volt-cyan));
+}
+
+.volt-footer__newsletter-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.volt-footer__newsletter-copy {
+  flex-shrink: 0;
+}
+
+.volt-footer__newsletter-eyebrow {
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--volt-cyan);
+  margin-bottom: 8px;
+}
+
+.volt-footer__newsletter-heading {
+  font-family: var(--volt-font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.volt-footer__newsletter-sub {
+  font-family: var(--volt-font-body);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.volt-footer__form-wrap {
+  flex: 1;
+  max-width: 480px;
+}
+
+.volt-footer__form-row {
+  display: flex;
+  height: 50px;
+}
+
+.volt-footer__input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: none;
+  border-radius: var(--volt-radius-sm) 0 0 var(--volt-radius-sm);
+  padding: 0 18px;
+  font-family: var(--volt-font-body);
+  font-size: 14px;
+  color: #ffffff;
+  outline: none;
+  transition:
+    border-color var(--volt-transition),
+    background var(--volt-transition);
+  min-width: 0;
+}
+
+.volt-footer__input::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.volt-footer__input:focus {
+  border-color: var(--volt-blue);
+  background: rgba(0, 102, 255, 0.06);
+}
+
+.volt-footer__form-row .volt-btn {
+  border-radius: 0 var(--volt-radius-sm) var(--volt-radius-sm) 0;
+  height: 100%;
+  padding: 0 22px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.volt-footer__form-success {
+  font-family: var(--volt-font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--volt-success);
+  padding: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volt-footer__form-success::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--volt-success);
+  flex-shrink: 0;
+}
+
+.volt-footer__form-error {
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--volt-error);
+  margin-top: 8px;
+}
+
+/* ─── Bottom bar ─────────────────────────────────── */
+
+.volt-footer__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 20px 0;
+}
+
+.volt-footer__bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.volt-footer__copyright {
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.22);
+  margin: 0;
+}
+
+.volt-footer__policies {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.volt-footer__policy-link {
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  transition: color var(--volt-transition);
+}
+
+.volt-footer__policy-link:hover {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Payment icons */
+.volt-footer__payments {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.volt-footer__payments .icon.icon--full-color {
+  height: 22px;
+  width: auto;
+  filter: grayscale(1) brightness(0.55);
+  transition: filter var(--volt-transition);
+  display: block;
+}
+
+.volt-footer__payments li:hover .icon.icon--full-color {
+  filter: grayscale(0) brightness(1);
+}
+
+/* ─── Responsive ─────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .volt-footer__grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+  }
+
+  .volt-footer__brand {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 40px;
+    align-items: start;
+  }
+
+  .volt-footer__logo {
+    grid-column: 1;
+  }
+
+  .volt-footer__tagline {
+    grid-column: 1;
+    max-width: 260px;
+  }
+
+  .volt-footer__social {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .volt-footer__top {
+    padding: 48px 0 40px;
+  }
+
+  .volt-footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .volt-footer__brand {
+    grid-column: 1 / -1;
+    display: block;
+  }
+
+  .volt-footer__newsletter-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .volt-footer__form-wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .volt-footer__bottom-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .volt-footer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .volt-footer__form-row {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+  }
+
+  .volt-footer__input {
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--volt-radius-sm);
+    height: 48px;
+  }
+
+  .volt-footer__form-row .volt-btn {
+    border-radius: var(--volt-radius-sm);
+    height: 48px;
+    width: 100%;
+  }
+}
