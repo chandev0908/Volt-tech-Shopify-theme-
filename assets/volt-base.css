@@ -1,0 +1,809 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* ─── Design Tokens ──────────────────────────── */
+:root {
+  /* Colors */
+  --volt-bg: #f8f9fa;
+  --volt-surface: #ffffff;
+  --volt-dark: #0a0a0a;
+  --volt-dark-2: #1a1a1a;
+  --volt-dark-3: #374151;
+  --volt-blue: #0066ff;
+  --volt-blue-hover: #0052cc;
+  --volt-blue-light: #e8f0ff;
+  --volt-blue-mid: #4d94ff;
+  --volt-cyan: #00d4ff;
+  --volt-text: #0a0a0a;
+  --volt-text-2: #374151;
+  --volt-muted: #6b7280;
+  --volt-muted-2: #9ca3af;
+  --volt-border: #e5e7eb;
+  --volt-border-hover: #0066ff;
+  --volt-success: #059669;
+  --volt-success-bg: #ecfdf5;
+  --volt-error: #ef4444;
+  --volt-error-bg: #fef2f2;
+  --volt-warning: #f59e0b;
+  --volt-warning-bg: #fffbeb;
+
+  /* Dark mode */
+  --volt-dm-bg: #0a0a0a;
+  --volt-dm-surface: #1a1a1a;
+  --volt-dm-border: #2a2a2a;
+  --volt-dm-text: #f9fafb;
+  --volt-dm-muted: #9ca3af;
+
+  /* Typography */
+  --volt-font-display: 'Syne', sans-serif;
+  --volt-font-body: 'Inter', sans-serif;
+  --volt-font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --volt-radius: 0px;
+  --volt-radius-sm: 2px;
+  --volt-radius-md: 4px;
+
+  /* Shadows */
+  --volt-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --volt-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --volt-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --volt-shadow-blue: 0 4px 24px rgba(0, 102, 255, 0.2);
+
+  /* Transitions */
+  --volt-transition: 0.2s ease;
+}
+
+/* ─── Dark mode ───────────────────────────────── */
+[data-theme='dark'] {
+  --volt-bg: var(--volt-dm-bg);
+  --volt-surface: var(--volt-dm-surface);
+  --volt-border: var(--volt-dm-border);
+  --volt-text: var(--volt-dm-text);
+  --volt-muted: var(--volt-dm-muted);
+  --volt-text-2: #d1d5db;
+}
+
+/* ─── Reset ───────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--volt-font-body);
+  background: var(--volt-bg);
+  color: var(--volt-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  transition:
+    background var(--volt-transition),
+    color var(--volt-transition);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--volt-blue);
+  text-decoration: none;
+  transition: color var(--volt-transition);
+}
+a:hover {
+  color: var(--volt-blue-hover);
+}
+
+/* ─── Focus styles (Accessibility) ───────────── */
+:focus-visible {
+  outline: 2px solid var(--volt-blue);
+  outline-offset: 2px;
+}
+
+/* ─── Typography ──────────────────────────────── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--volt-font-display);
+  color: var(--volt-text);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  font-weight: 700;
+}
+
+/* ─── Buttons ─────────────────────────────────── */
+.volt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--volt-radius);
+  font-family: var(--volt-font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--volt-transition);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+/* Ripple effect */
+.volt-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  opacity: 0;
+  transition: opacity var(--volt-transition);
+}
+.volt-btn:hover::after {
+  opacity: 1;
+}
+.volt-btn:active {
+  transform: scale(0.98);
+}
+
+.volt-btn--primary {
+  background: var(--volt-blue);
+  color: white;
+  border-color: var(--volt-blue);
+}
+.volt-btn--primary:hover {
+  background: var(--volt-blue-hover);
+  border-color: var(--volt-blue-hover);
+  box-shadow: var(--volt-shadow-blue);
+  color: white;
+}
+
+.volt-btn--outline {
+  background: transparent;
+  color: var(--volt-blue);
+  border-color: var(--volt-blue);
+}
+.volt-btn--outline:hover {
+  background: var(--volt-blue-light);
+  color: var(--volt-blue);
+}
+
+.volt-btn--dark {
+  background: var(--volt-dark);
+  color: white;
+  border-color: var(--volt-dark);
+}
+.volt-btn--dark:hover {
+  background: var(--volt-dark-2);
+  color: white;
+}
+
+.volt-btn--ghost {
+  background: transparent;
+  color: var(--volt-muted);
+  border-color: var(--volt-border);
+}
+.volt-btn--ghost:hover {
+  border-color: var(--volt-border-hover);
+  color: var(--volt-text);
+}
+
+.volt-btn--lg {
+  padding: 16px 32px;
+  font-size: 15px;
+}
+
+.volt-btn--sm {
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+.volt-btn--full {
+  width: 100%;
+}
+
+.volt-btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ─── Badges ──────────────────────────────────── */
+.volt-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: var(--volt-radius-sm);
+  line-height: 1.6;
+}
+
+.volt-badge--new {
+  background: var(--volt-blue);
+  color: white;
+}
+.volt-badge--sale {
+  background: var(--volt-error);
+  color: white;
+}
+.volt-badge--hot {
+  background: var(--volt-warning);
+  color: var(--volt-dark);
+}
+.volt-badge--soldout {
+  background: var(--volt-border);
+  color: var(--volt-muted);
+}
+.volt-badge--free {
+  background: var(--volt-blue-light);
+  color: var(--volt-blue);
+}
+.volt-badge--stock {
+  background: var(--volt-success-bg);
+  color: var(--volt-success);
+}
+
+/* ─── Section layout ──────────────────────────── */
+.volt-section {
+  padding: 80px 0;
+}
+
+.volt-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.volt-section__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.volt-section__eyebrow {
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--volt-blue);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.volt-section__eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--volt-blue);
+  flex-shrink: 0;
+}
+
+.volt-section__title {
+  font-family: var(--volt-font-display);
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--volt-text);
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+
+.volt-section__link {
+  font-family: var(--volt-font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--volt-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap var(--volt-transition);
+  margin-bottom: 4px;
+  text-decoration: none;
+}
+.volt-section__link:hover {
+  gap: 10px;
+  color: var(--volt-blue-hover);
+}
+
+/* ─── Product card ────────────────────────────── */
+.volt-card {
+  background: var(--volt-surface);
+  border: 1px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+  overflow: hidden;
+  position: relative;
+  transition:
+    border-color var(--volt-transition),
+    box-shadow var(--volt-transition),
+    transform var(--volt-transition);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.volt-card:hover {
+  border-color: var(--volt-blue);
+  box-shadow: var(--volt-shadow-blue);
+  transform: translateY(-3px);
+}
+
+.volt-card__image-wrap {
+  display: block;
+  height: 220px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--volt-bg);
+  position: relative;
+  text-decoration: none;
+}
+.volt-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transition: transform 0.4s ease;
+  padding: 16px;
+}
+.volt-card:hover .volt-card__img {
+  transform: scale(1.04);
+}
+
+.volt-card__img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--volt-font-display);
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--volt-blue);
+  opacity: 0.15;
+}
+
+.volt-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 102, 255, 0.06);
+  opacity: 0;
+  transition: opacity var(--volt-transition);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 16px;
+}
+.volt-card:hover .volt-card__overlay {
+  opacity: 1;
+}
+
+.volt-card__quick-add {
+  background: var(--volt-blue);
+  color: white;
+  padding: 9px 22px;
+  border-radius: var(--volt-radius-sm);
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transform: translateY(8px);
+  transition:
+    transform var(--volt-transition),
+    background var(--volt-transition);
+}
+.volt-card:hover .volt-card__quick-add {
+  transform: translateY(0);
+}
+.volt-card__quick-add:hover {
+  background: var(--volt-blue-hover);
+}
+
+.volt-card__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+}
+
+.volt-card__wishlist {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--volt-radius-sm);
+  background: var(--volt-surface);
+  border: 1px solid var(--volt-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition:
+    opacity var(--volt-transition),
+    border-color var(--volt-transition);
+  cursor: pointer;
+}
+.volt-card:hover .volt-card__wishlist {
+  opacity: 1;
+}
+.volt-card__wishlist:hover {
+  border-color: var(--volt-error);
+}
+.volt-card__wishlist svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--volt-muted);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    stroke var(--volt-transition),
+    fill var(--volt-transition);
+}
+.volt-card__wishlist:hover svg {
+  stroke: var(--volt-error);
+}
+.volt-card__wishlist.is-wished svg {
+  fill: var(--volt-error);
+  stroke: var(--volt-error);
+}
+
+.volt-card__body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.volt-card__brand {
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--volt-muted);
+  margin-bottom: 4px;
+}
+
+.volt-card__name {
+  display: block;
+  font-family: var(--volt-font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--volt-text);
+  text-decoration: none;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  transition: color var(--volt-transition);
+}
+.volt-card__name:hover {
+  color: var(--volt-blue);
+}
+
+.volt-card__subtitle {
+  font-size: 12px;
+  color: var(--volt-muted);
+  margin-bottom: auto;
+  padding-bottom: 14px;
+  line-height: 1.5;
+  font-family: var(--volt-font-mono);
+  letter-spacing: 0.3px;
+}
+
+.volt-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--volt-border);
+  margin-top: auto;
+}
+
+.volt-card__prices {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.volt-card__price {
+  font-family: var(--volt-font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--volt-text);
+}
+
+.volt-card__compare {
+  font-size: 13px;
+  color: var(--volt-muted);
+  text-decoration: line-through;
+}
+
+.volt-card__add {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--volt-radius-sm);
+  background: var(--volt-blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--volt-transition),
+    transform var(--volt-transition);
+  flex-shrink: 0;
+}
+.volt-card__add:hover {
+  background: var(--volt-blue-hover);
+  transform: scale(1.1);
+}
+.volt-card__add--soldout {
+  background: var(--volt-border);
+  color: var(--volt-muted);
+  cursor: not-allowed;
+  font-size: 14px;
+}
+.volt-card__add--soldout:hover {
+  background: var(--volt-border) !important;
+  transform: none !important;
+}
+
+/* ─── Spec table ──────────────────────────────── */
+.volt-specs {
+  border: 1px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+  overflow: hidden;
+}
+
+.volt-specs__row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  border-bottom: 1px solid var(--volt-border);
+}
+.volt-specs__row:last-child {
+  border-bottom: none;
+}
+.volt-specs__row:nth-child(even) {
+  background: var(--volt-bg);
+}
+
+.volt-specs__key {
+  padding: 10px 16px;
+  font-family: var(--volt-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--volt-muted);
+  border-right: 1px solid var(--volt-border);
+  display: flex;
+  align-items: center;
+}
+
+.volt-specs__val {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--volt-text);
+  display: flex;
+  align-items: center;
+}
+
+/* ─── Wishlist toast ──────────────────────────── */
+.volt-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--volt-dark);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--volt-radius-sm);
+  font-family: var(--volt-font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  z-index: 9999;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.volt-toast.is-visible {
+  transform: translateX(-50%) translateY(0);
+}
+.volt-toast__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--volt-blue);
+  flex-shrink: 0;
+}
+
+/* ─── Comparison bar ──────────────────────────── */
+.volt-compare-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--volt-dark);
+  border-top: 2px solid var(--volt-blue);
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 500;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.volt-compare-bar.is-visible {
+  transform: translateY(0);
+}
+
+.volt-compare-bar__items {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.volt-compare-bar__item {
+  background: var(--volt-dark-2);
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: var(--volt-radius-sm);
+  font-family: var(--volt-font-mono);
+  font-size: 11px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.volt-compare-bar__remove {
+  background: none;
+  border: none;
+  color: var(--volt-muted);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: color var(--volt-transition);
+  padding: 0;
+}
+.volt-compare-bar__remove:hover {
+  color: var(--volt-error);
+}
+
+/* ─── Page loader ─────────────────────────────── */
+.volt-page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--volt-blue), var(--volt-cyan));
+  z-index: 9999;
+  transition: width 0.3s ease;
+}
+
+/* ─── Accessibility helpers ───────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--volt-blue);
+  color: white;
+  padding: 8px 16px;
+  z-index: 9999;
+  font-family: var(--volt-font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: top var(--volt-transition);
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ─── Divider ─────────────────────────────────── */
+.volt-divider {
+  height: 1px;
+  background: var(--volt-border);
+  margin: 0;
+}
+
+/* ─── Pill filter ─────────────────────────────── */
+.volt-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: 1px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--volt-muted);
+  cursor: pointer;
+  transition: all var(--volt-transition);
+  background: transparent;
+  text-decoration: none;
+}
+.volt-pill:hover {
+  border-color: var(--volt-blue);
+  color: var(--volt-blue);
+  background: var(--volt-blue-light);
+}
+.volt-pill.is-active {
+  background: var(--volt-blue);
+  border-color: var(--volt-blue);
+  color: white;
+}
+
+/* ─── Spinner ─────────────────────────────────── */
+@keyframes volt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.volt-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: volt-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+.volt-spinner--blue {
+  border-color: var(--volt-blue-light);
+  border-top-color: var(--volt-blue);
+}
+
+/* ─── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .volt-container {
+    padding: 0 20px;
+  }
+  .volt-section {
+    padding: 48px 0;
+  }
+  .volt-section__title {
+    font-size: 26px;
+  }
+}
