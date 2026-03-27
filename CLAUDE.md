@@ -86,8 +86,8 @@ All interactive elements use `aria-expanded`, `aria-haspopup`, `aria-controls`.
 ## What Still Needs Building
 
 1. ~~`sections/hero.liquid`~~ — **Done**
-2. `sections/featured-products.liquid` — Dark product grid
-3. `sections/footer.liquid` — Newsletter + links + payment icons
+2. ~~`sections/featured-products.liquid`~~ — **Done** (+ `snippets/volt-product-card.liquid`)
+3. ~~`sections/footer.liquid`~~ — **Done**
 4. `sections/main-product.liquid` — Spec table (metafields), Judge.me reviews, sticky ATC, subscription UI
 5. `sections/main-collection.liquid` — Filters, sort, view toggle
 6. `sections/main-cart.liquid` — Cart page

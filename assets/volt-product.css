@@ -1,0 +1,702 @@
+/* ─── Volt Product Page ───────────────────────────────────────────────────── */
+
+.volt-product {
+  padding: 28px 0 80px;
+  background: var(--volt-bg);
+}
+
+/* ─── Breadcrumb ─────────────────────────────── */
+
+.volt-product__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  flex-wrap: wrap;
+}
+
+.volt-product__breadcrumb a {
+  color: var(--volt-muted);
+  text-decoration: none;
+  transition: color var(--volt-transition);
+}
+
+.volt-product__breadcrumb a:hover {
+  color: var(--volt-blue);
+}
+
+.volt-product__breadcrumb-sep {
+  color: var(--volt-border);
+}
+
+.volt-product__breadcrumb-current {
+  color: var(--volt-text);
+}
+
+/* ─── Two-column grid ───────────────────────── */
+
+.volt-product__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+/* ─── Media column ──────────────────────────── */
+
+.volt-product__media {
+  position: sticky;
+  top: 88px;
+}
+
+/* Override Dawn's product media styles */
+.volt-product .product__media-item {
+  background: var(--volt-surface);
+  border: 1px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+  overflow: hidden;
+}
+
+.volt-product .product__media-item--active,
+.volt-product .product__media-item:hover {
+  border-color: var(--volt-blue);
+}
+
+.volt-product .product__thumbnail {
+  border: 2px solid transparent;
+  border-radius: var(--volt-radius-sm);
+  overflow: hidden;
+}
+
+.volt-product .product__thumbnail--active,
+.volt-product .product__thumbnail:hover {
+  border-color: var(--volt-blue);
+}
+
+/* ─── Info column ───────────────────────────── */
+
+.volt-product__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Vendor + badges */
+.volt-product__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.volt-product__vendor {
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--volt-blue);
+}
+
+/* Title */
+.volt-product__title {
+  font-family: var(--volt-font-display);
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 800;
+  color: var(--volt-text);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin: 0 0 14px;
+}
+
+/* Judge.me rating badge area */
+.volt-product__rating {
+  margin-bottom: 20px;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Review count link */
+.volt-product__rating a {
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--volt-muted);
+}
+
+/* ─── Price (overrides Dawn's price snippet) ── */
+
+.volt-product__price-wrap {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--volt-border);
+}
+
+.volt-product .price {
+  margin: 0;
+}
+
+.volt-product .price__container {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.volt-product .price-item {
+  font-family: var(--volt-font-display);
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--volt-text);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.volt-product .price--on-sale .price-item--sale {
+  font-family: var(--volt-font-display);
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--volt-text);
+}
+
+.volt-product .price--on-sale .price-item--regular {
+  font-size: 18px;
+  color: var(--volt-muted);
+  text-decoration: line-through;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.volt-product .price__badge {
+  display: none;
+}
+
+.volt-product__save {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: var(--volt-error);
+  color: white;
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: var(--volt-radius-sm);
+  align-self: flex-start;
+  margin-left: 4px;
+  position: relative;
+  top: -2px;
+}
+
+/* ─── Variant picker (inline variant-radios) ── */
+
+.volt-product__options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.volt-product__option {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.volt-product__option-label {
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--volt-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.volt-product__option-label span {
+  font-family: var(--volt-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--volt-text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.volt-product__option-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.volt-product__option-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border: 1.5px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+  font-family: var(--volt-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--volt-text);
+  cursor: pointer;
+  transition: all var(--volt-transition);
+  min-width: 44px;
+  text-align: center;
+  line-height: 1;
+  user-select: none;
+}
+
+.volt-product__option-btn:hover {
+  border-color: var(--volt-blue);
+  color: var(--volt-blue);
+}
+
+.volt-product__option-input:checked + .volt-product__option-btn {
+  background: var(--volt-blue);
+  border-color: var(--volt-blue);
+  color: white;
+}
+
+.volt-product__option-btn.is-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  text-decoration: line-through;
+  pointer-events: none;
+}
+
+/* ─── Cart form row ─────────────────────────── */
+
+.volt-product__form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: stretch;
+}
+
+/* Quantity input — wraps Dawn's quantity-input element */
+.volt-product .quantity {
+  display: flex;
+  border: 1.5px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+  height: 52px;
+}
+
+.volt-product .quantity__button {
+  width: 42px;
+  background: transparent;
+  border: none;
+  color: var(--volt-text);
+  font-size: 20px;
+  font-family: var(--volt-font-display);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--volt-transition), color var(--volt-transition);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.volt-product .quantity__button:hover {
+  background: var(--volt-blue-light);
+  color: var(--volt-blue);
+}
+
+.volt-product .quantity__input {
+  width: 48px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid var(--volt-border);
+  border-right: 1px solid var(--volt-border);
+  background: transparent;
+  font-family: var(--volt-font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--volt-text);
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.volt-product .quantity__input::-webkit-inner-spin-button,
+.volt-product .quantity__input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* ATC button */
+.volt-product__atc {
+  flex: 1;
+  height: 52px;
+  font-size: 14px;
+  justify-content: center;
+  position: relative;
+}
+
+.volt-product__atc[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Dawn adds .loading class to product-form element */
+product-form.loading .volt-product__atc {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+product-form.loading .volt-product__atc .volt-product__atc-text {
+  opacity: 0;
+}
+
+product-form.loading .volt-product__atc .volt-product__atc-spinner {
+  display: block;
+}
+
+.volt-product__atc-spinner {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Product form errors */
+.product-form__error-message-wrapper:not([hidden]) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--volt-error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--volt-radius-sm);
+  font-family: var(--volt-font-body);
+  font-size: 13px;
+  color: var(--volt-error);
+  margin-top: 10px;
+}
+
+/* ─── Secondary actions: wishlist + compare ── */
+
+.volt-product__secondary-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.volt-product__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 16px;
+  border: 1.5px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+  background: transparent;
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--volt-muted);
+  cursor: pointer;
+  transition: all var(--volt-transition);
+  flex: 1;
+}
+
+.volt-product__action-btn:hover {
+  border-color: var(--volt-blue);
+  color: var(--volt-blue);
+}
+
+.volt-product__action-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.volt-product__action-btn--wishlist.is-wished {
+  border-color: var(--volt-error);
+  color: var(--volt-error);
+}
+
+.volt-product__action-btn--wishlist.is-wished svg {
+  fill: var(--volt-error);
+  stroke: var(--volt-error);
+}
+
+/* ─── Trust badges ──────────────────────────── */
+
+.volt-product__trust {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  background: var(--volt-surface);
+  border: 1px solid var(--volt-border);
+  border-radius: var(--volt-radius-sm);
+}
+
+.volt-product__trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--volt-font-body);
+  font-size: 13px;
+  color: var(--volt-text-2);
+  line-height: 1;
+}
+
+.volt-product__trust-item svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--volt-success);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* ─── Tabs section ──────────────────────────── */
+
+.volt-product__tabs-section {
+  margin-top: 72px;
+  border-top: 2px solid var(--volt-dark);
+}
+
+.volt-product__tab-nav {
+  display: flex;
+  border-bottom: 1px solid var(--volt-border);
+}
+
+.volt-product__tab-btn {
+  padding: 18px 28px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: var(--volt-font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--volt-muted);
+  cursor: pointer;
+  transition: all var(--volt-transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+.volt-product__tab-btn:hover {
+  color: var(--volt-text);
+}
+
+.volt-product__tab-btn.is-active {
+  color: var(--volt-blue);
+  border-bottom-color: var(--volt-blue);
+}
+
+.volt-product__tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 7px;
+  background: var(--volt-blue-light);
+  color: var(--volt-blue);
+  font-family: var(--volt-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: var(--volt-radius-sm);
+}
+
+.volt-product__tab-panel {
+  padding: 48px 0;
+}
+
+.volt-product__description {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--volt-text-2);
+  max-width: 760px;
+}
+
+.volt-product__description h1,
+.volt-product__description h2,
+.volt-product__description h3,
+.volt-product__description h4 {
+  font-family: var(--volt-font-display);
+  color: var(--volt-text);
+  margin: 28px 0 12px;
+  letter-spacing: -0.5px;
+}
+
+.volt-product__description p {
+  margin: 0 0 16px;
+}
+
+.volt-product__description ul,
+.volt-product__description ol {
+  padding-left: 20px;
+  margin: 0 0 16px;
+}
+
+.volt-product__description a {
+  color: var(--volt-blue);
+}
+
+/* Specs tab */
+.volt-product__specs-empty {
+  font-family: var(--volt-font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--volt-muted);
+  text-transform: uppercase;
+  padding: 20px 0;
+}
+
+/* Reviews tab */
+.volt-product__reviews-wrap {
+  max-width: 860px;
+}
+
+/* ─── Sticky ATC bar ────────────────────────── */
+
+.volt-sticky-atc {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--volt-dark);
+  border-top: 2px solid var(--volt-blue);
+  z-index: 100;
+  transform: translateY(110%);
+  transition: transform 0.3s ease;
+  padding: 12px 0;
+}
+
+.volt-sticky-atc.is-visible {
+  transform: translateY(0);
+}
+
+.volt-sticky-atc__inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.volt-sticky-atc__img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--volt-radius-sm);
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+.volt-sticky-atc__title {
+  font-family: var(--volt-font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.3px;
+  min-width: 0;
+}
+
+.volt-sticky-atc__price {
+  font-family: var(--volt-font-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ─── Responsive ────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .volt-product__grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .volt-product__media {
+    position: static;
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .volt-product {
+    padding: 20px 0 60px;
+  }
+
+  .volt-product__title {
+    font-size: 26px;
+  }
+
+  .volt-product .price-item {
+    font-size: 28px;
+  }
+
+  .volt-product .price--on-sale .price-item--sale {
+    font-size: 28px;
+  }
+
+  .volt-product__tab-btn {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .volt-sticky-atc__title {
+    display: none;
+  }
+
+  .volt-product__form-row {
+    flex-direction: column;
+  }
+
+  .volt-product__atc {
+    height: 52px;
+    flex: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .volt-product__tab-btn {
+    padding: 12px 12px;
+    font-size: 12px;
+  }
+
+  .volt-product__secondary-actions {
+    flex-direction: column;
+  }
+}
