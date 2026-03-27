@@ -1,0 +1,509 @@
+{{ 'section-hero.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign featured_product = section.settings.featured_product
+  assign has_product = false
+  if featured_product != blank and featured_product != empty
+    assign has_product = true
+    assign current_variant = featured_product.selected_or_first_available_variant
+    assign product_image = featured_product.featured_image
+    assign spec_processor = featured_product.metafields.specs.processor.value
+    assign spec_ram = featured_product.metafields.specs.ram.value
+    assign spec_storage = featured_product.metafields.specs.storage.value
+    assign spec_display = featured_product.metafields.specs.display.value
+    assign has_sale = false
+    if current_variant.compare_at_price > current_variant.price
+      assign has_sale = true
+    endif
+    assign thirty_days_ago = 'now' | date: '%s' | minus: 2592000
+    assign product_timestamp = featured_product.created_at | date: '%s'
+    assign product_is_new = false
+    if product_timestamp > thirty_days_ago
+      assign product_is_new = true
+    endif
+  endif
+
+  assign stat_blocks = section.blocks | where: 'type', 'stat'
+  assign feature_blocks = section.blocks | where: 'type', 'feature'
+-%}
+
+<section
+  class="volt-hero"
+  aria-label="{{ section.settings.heading | strip_html | escape }}"
+  id="volt-hero-{{ section.id }}"
+>
+
+  {%- comment -%} Background {%- endcomment -%}
+  <div class="volt-hero__bg" aria-hidden="true">
+    {%- if section.settings.background_image != blank -%}
+      <img
+        src="{{ section.settings.background_image | image_url: width: 1920 }}"
+        srcset="
+          {{ section.settings.background_image | image_url: width: 768 }} 768w,
+          {{ section.settings.background_image | image_url: width: 1280 }} 1280w,
+          {{ section.settings.background_image | image_url: width: 1920 }} 1920w
+        "
+        sizes="100vw"
+        alt=""
+        class="volt-hero__bg-img"
+        loading="eager"
+        fetchpriority="high"
+        width="{{ section.settings.background_image.width }}"
+        height="{{ section.settings.background_image.height }}"
+      >
+    {%- endif -%}
+    <div
+      class="volt-hero__bg-overlay"
+      style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+    ></div>
+  </div>
+
+  <div class="volt-hero__pattern" aria-hidden="true"></div>
+
+  {%- comment -%} Main grid {%- endcomment -%}
+  <div class="volt-hero__inner">
+
+    {%- comment -%} ── Content column ── {%- endcomment -%}
+    <div class="volt-hero__content">
+
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="volt-hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      <h1 class="volt-hero__headline">
+        {{- section.settings.heading | escape -}}
+        {%- if section.settings.heading_accent != blank -%}
+          <span class="volt-hero__headline-accent">{{- section.settings.heading_accent | escape -}}</span>
+        {%- endif -%}
+      </h1>
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="volt-hero__sub">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+
+      {%- comment -%} CTAs {%- endcomment -%}
+      {%- if section.settings.cta_primary_text != blank or section.settings.cta_secondary_text != blank -%}
+        <div class="volt-hero__actions">
+          {%- if section.settings.cta_primary_text != blank -%}
+            <a
+              href="{{ section.settings.cta_primary_url | default: routes.all_products_collection_url }}"
+              class="volt-btn volt-btn--primary volt-btn--lg"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="13 17 18 12 13 7"></polyline>
+                <polyline points="6 17 11 12 6 7"></polyline>
+              </svg>
+              {{- section.settings.cta_primary_text | escape -}}
+            </a>
+          {%- endif -%}
+
+          {%- if section.settings.cta_secondary_text != blank -%}
+            <a
+              href="{{ section.settings.cta_secondary_url | default: routes.collections_url }}"
+              class="volt-btn volt-btn--outline volt-btn--lg"
+            >
+              {{- section.settings.cta_secondary_text | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Feature chips {%- endcomment -%}
+      {%- if feature_blocks.size > 0 -%}
+        <div class="volt-hero__features" role="list">
+          {%- for block in feature_blocks -%}
+            <span class="volt-hero__feature" role="listitem" {{ block.shopify_attributes }}>
+              {%- case block.settings.icon -%}
+                {%- when 'truck' -%}
+                  <svg class="volt-hero__feature-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                {%- when 'shield' -%}
+                  <svg class="volt-hero__feature-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                {%- when 'star' -%}
+                  <svg class="volt-hero__feature-icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {%- when 'bolt' -%}
+                  <svg class="volt-hero__feature-icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                {%- else -%}
+                  <svg class="volt-hero__feature-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              {%- endcase -%}
+              {{- block.settings.text | escape -}}
+            </span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Stats {%- endcomment -%}
+      {%- if stat_blocks.size > 0 -%}
+        <div class="volt-hero__stats" role="list" aria-label="Store highlights">
+          {%- for block in stat_blocks -%}
+            <div class="volt-hero__stat" role="listitem" {{ block.shopify_attributes }}>
+              <div class="volt-hero__stat-value">{{ block.settings.value | escape }}</div>
+              <div class="volt-hero__stat-label">{{ block.settings.label | escape }}</div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+    </div>
+
+    {%- comment -%} ── Visual column ── {%- endcomment -%}
+    <div class="volt-hero__visual">
+      <div class="volt-hero__glow" aria-hidden="true"></div>
+
+      {%- if has_product -%}
+        <div class="volt-hero__product">
+
+          {%- comment -%} Image area {%- endcomment -%}
+          <div class="volt-hero__product-top">
+
+            {%- comment -%} Badge {%- endcomment -%}
+            <div class="volt-hero__product-badge">
+              {%- if featured_product.available == false -%}
+                <span class="volt-badge volt-badge--soldout">Sold Out</span>
+              {%- elsif has_sale -%}
+                <span class="volt-badge volt-badge--sale">Sale</span>
+              {%- elsif product_is_new -%}
+                <span class="volt-badge volt-badge--new">New</span>
+              {%- else -%}
+                <span class="volt-badge volt-badge--new">Featured</span>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Wishlist button {%- endcomment -%}
+            <button
+              class="volt-hero__product-wishlist"
+              data-product-id="{{ featured_product.id }}"
+              data-wishlist-btn
+              aria-label="Add {{ featured_product.title | escape }} to wishlist"
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+
+            {%- if product_image != blank -%}
+              <img
+                src="{{ product_image | image_url: width: 600 }}"
+                srcset="
+                  {{ product_image | image_url: width: 400 }} 400w,
+                  {{ product_image | image_url: width: 600 }} 600w,
+                  {{ product_image | image_url: width: 800 }} 800w
+                "
+                sizes="(max-width: 768px) 80vw, 380px"
+                alt="{{ product_image.alt | default: featured_product.title | escape }}"
+                class="volt-hero__product-img"
+                loading="eager"
+                fetchpriority="high"
+                width="{{ product_image.width }}"
+                height="{{ product_image.height }}"
+              >
+            {%- else -%}
+              <div class="volt-hero__product-placeholder" aria-hidden="true">VOLT</div>
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} Info {%- endcomment -%}
+          <div class="volt-hero__product-info">
+
+            {%- if featured_product.vendor != blank -%}
+              <p class="volt-hero__product-brand">{{ featured_product.vendor | escape }}</p>
+            {%- endif -%}
+
+            <a
+              href="{{ featured_product.url }}"
+              class="volt-hero__product-name"
+            >
+              {{- featured_product.title | escape -}}
+            </a>
+
+            {%- comment -%} Spec chips from metafields {%- endcomment -%}
+            {%- if spec_processor != blank or spec_ram != blank or spec_storage != blank or spec_display != blank -%}
+              <div class="volt-hero__product-chips" aria-label="Key specs">
+                {%- if spec_processor != blank -%}
+                  <span class="volt-hero__product-chip">{{ spec_processor }}</span>
+                {%- endif -%}
+                {%- if spec_ram != blank -%}
+                  <span class="volt-hero__product-chip">{{ spec_ram }}</span>
+                {%- endif -%}
+                {%- if spec_storage != blank -%}
+                  <span class="volt-hero__product-chip">{{ spec_storage }}</span>
+                {%- endif -%}
+                {%- if spec_display != blank -%}
+                  <span class="volt-hero__product-chip">{{ spec_display }}</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%} Price + ATC {%- endcomment -%}
+            <div class="volt-hero__product-footer">
+              <div class="volt-hero__product-prices">
+                <span class="volt-hero__product-price">
+                  {{- current_variant.price | money_with_currency -}}
+                </span>
+                {%- if has_sale -%}
+                  <span class="volt-hero__product-compare">
+                    {{- current_variant.compare_at_price | money -}}
+                  </span>
+                {%- endif -%}
+              </div>
+
+              {%- if featured_product.available -%}
+                <form
+                  action="{{ routes.cart_add_url }}"
+                  method="post"
+                  class="volt-hero__product-form"
+                  id="hero-product-form-{{ section.id }}"
+                >
+                  <input type="hidden" name="id" value="{{ current_variant.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button
+                    type="submit"
+                    name="add"
+                    class="volt-hero__product-atc"
+                    aria-label="Add {{ featured_product.title | escape }} to cart"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Add to Cart
+                  </button>
+                </form>
+              {%- else -%}
+                <span class="volt-hero__product-atc" style="opacity: 0.45; cursor: not-allowed;">
+                  Sold Out
+                </span>
+              {%- endif -%}
+            </div>
+
+          </div>
+        </div>
+
+      {%- else -%}
+        {%- comment -%} No product selected — editor placeholder {%- endcomment -%}
+        <div class="volt-hero__product volt-hero__product--empty">
+          <p class="volt-hero__product-empty-label">Select a featured product<br>in section settings</p>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+  {%- comment -%} Scroll hint {%- endcomment -%}
+  {%- if section.settings.show_scroll_hint -%}
+    <a
+      href="#volt-hero-{{ section.id }}-next"
+      class="volt-hero__scroll"
+      aria-label="Scroll down"
+    >
+      <span class="volt-hero__scroll-label">Scroll</span>
+      <span class="volt-hero__scroll-line" aria-hidden="true"></span>
+    </a>
+  {%- endif -%}
+
+</section>
+
+{%- comment -%} Anchor target for scroll hint {%- endcomment -%}
+<span id="volt-hero-{{ section.id }}-next" aria-hidden="true"></span>
+
+{%- comment -%} Wire up wishlist button {%- endcomment -%}
+{%- if has_product -%}
+  <script src="{{ 'volt-wishlist.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Volt Hero",
+  "tag": "section",
+  "class": "section-volt-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "New Arrivals 2025",
+      "info": "Small label above the headline (JetBrains Mono, cyan)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (first line)",
+      "default": "Power Up Your"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading accent (second line)",
+      "default": "World.",
+      "info": "Renders in blue→cyan gradient. Leave blank to use a single-line headline."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Premium electronics at unbeatable prices. Laptops, gaming gear, peripherals and more — delivered fast."
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_primary_text",
+      "label": "Primary button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_text",
+      "label": "Secondary button text",
+      "default": "View Deals"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_url",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Featured Product"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured product",
+      "info": "Spec chips (processor, RAM, storage, display) are pulled from metafields.specs.*"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image",
+      "info": "Optional. Dark overlay is applied automatically."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 95
+    },
+    {
+      "type": "header",
+      "content": "Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_hint",
+      "label": "Show scroll hint",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "500+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Products"
+        }
+      ]
+    },
+    {
+      "type": "feature",
+      "name": "Feature chip",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free Metro Delivery"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "check",
+          "options": [
+            { "value": "check", "label": "Checkmark" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "star", "label": "Star" },
+            { "value": "bolt", "label": "Bolt" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Volt Hero",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "value": "500+",
+            "label": "Products"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "10K+",
+            "label": "Customers"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "#1",
+            "label": "Tech Store"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "text": "Free Metro Delivery",
+            "icon": "truck"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "text": "1-Year Warranty",
+            "icon": "shield"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "text": "Best Price Guarantee",
+            "icon": "bolt"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
