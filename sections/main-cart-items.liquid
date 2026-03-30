@@ -1,9 +1,7 @@
 {{ 'volt-cart.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
-{%- unless settings.cart_type == 'drawer' -%}
-  <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
-{%- endunless -%}
+<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-input.js' | asset_url }}" defer="defer"></script>
 
 <cart-items
@@ -53,7 +51,7 @@
     {%- comment -%} Cart form {%- endcomment -%}
     <form
       action="{{ routes.cart_url }}"
-      class="volt-cart__form critical-hidden"
+      class="volt-cart__form"
       method="post"
       id="cart"
     >

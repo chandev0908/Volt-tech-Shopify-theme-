@@ -31,11 +31,14 @@
 /* ─── Section spacing ─────────────────────────────────────────────────── */
 
 .volt-cart-items-section {
+  display: block;
   padding: 40px 0 16px;
+  background-color: #0a0a0a;
 }
 
 .volt-cart-footer-section {
   padding: 0 0 72px;
+  background-color: #0a0a0a;
 }
 
 /* ─── Page header ─────────────────────────────────────────────────────── */

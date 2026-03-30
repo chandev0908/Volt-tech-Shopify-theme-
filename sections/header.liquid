@@ -1304,6 +1304,19 @@
       });
     }
 
+    /* ── Cart toggle ── */
+    var cartBtn = document.getElementById('volt-cart-toggle');
+    if (cartBtn) {
+      cartBtn.addEventListener('click', function () {
+        var drawer = document.querySelector('cart-drawer');
+        if (drawer) {
+          drawer.open(cartBtn);
+        } else {
+          window.location.href = '{{ routes.cart_url }}';
+        }
+      });
+    }
+
     /* ── Sticky header shadow on scroll ── */
     window.addEventListener(
       'scroll',
