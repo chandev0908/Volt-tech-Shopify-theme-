@@ -1,0 +1,165 @@
+{{ 'volt-wishlist.js' | asset_url | script_tag }}
+{{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
+
+<section class="volt-wishlist-page" aria-labelledby="volt-wishlist-page-title">
+  <div class="volt-container">
+
+    <div class="volt-wishlist-page__header">
+      <h1 class="volt-wishlist-page__title" id="volt-wishlist-page-title">
+        My Wishlist
+        <span class="volt-wishlist-page__title-count" id="volt-wishlist-page-count"></span>
+      </h1>
+      <a href="{{ routes.all_products_collection_url }}" class="volt-wishlist-page__continue">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Continue Shopping
+      </a>
+    </div>
+
+    <div id="volt-wishlist-page" aria-live="polite">
+      <div class="volt-wishlist-page__loading">
+        <span class="volt-wishlist-page__loading-dot"></span>
+        <span class="volt-wishlist-page__loading-dot"></span>
+        <span class="volt-wishlist-page__loading-dot"></span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .volt-wishlist-page {
+    padding: 48px 0 80px;
+  }
+
+  .volt-wishlist-page__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .volt-wishlist-page__title {
+    font-family: var(--volt-font-display);
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .volt-wishlist-page__title-count {
+    font-size: 0.55em;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 500;
+    letter-spacing: 0;
+    margin-left: 8px;
+  }
+
+  .volt-wishlist-page__continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--volt-font-mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    text-decoration: none;
+    transition: color var(--volt-transition);
+    white-space: nowrap;
+  }
+
+  .volt-wishlist-page__continue:hover {
+    color: var(--volt-cyan);
+  }
+
+  .volt-wishlist-page__loading {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 80px 0;
+  }
+
+  .volt-wishlist-page__loading-dot {
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: volt-wl-pulse 1.2s ease-in-out infinite;
+  }
+
+  .volt-wishlist-page__loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .volt-wishlist-page__loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes volt-wl-pulse {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+
+  .volt-wishlist-page__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 80px 24px;
+    gap: 16px;
+  }
+
+  .volt-wishlist-page__empty-title {
+    font-family: var(--volt-font-display);
+    font-size: 22px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: -0.5px;
+    margin: 0;
+  }
+
+  .volt-wishlist-page__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 1100px) {
+    .volt-wishlist-page__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .volt-wishlist-page__grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  }
+</style>
+
+<script>
+  // Update count badge once wishlist JS has rendered the page
+  (function () {
+    function updateCount() {
+      var countEl = document.getElementById('volt-wishlist-page-count');
+      if (!countEl) return;
+      try {
+        var ids = JSON.parse(localStorage.getItem('volt_wishlist')) || [];
+        countEl.textContent = ids.length > 0 ? '(' + ids.length + ')' : '';
+      } catch (e) {}
+    }
+
+    // Run after volt-wishlist.js has had time to render
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(updateCount, 100);
+      });
+    } else {
+      setTimeout(updateCount, 100);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Wishlist page",
+  "settings": []
+}
+{% endschema %}

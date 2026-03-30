@@ -872,16 +872,16 @@ product-form.loading .volt-product__atc .volt-product__atc-spinner {
 
 /* ─── Wishlist active state ───────────────────────────────────────────── */
 
-.volt-card__wishlist.is-active svg {
+.volt-card__wishlist.is-wished svg {
   fill: #ef4444;
   stroke: #ef4444;
 }
 
-.volt-product__action-btn--wishlist.is-active svg {
+.volt-product__action-btn--wishlist.is-wished svg {
   fill: #ef4444;
   stroke: #ef4444;
 }
 
-.volt-product__action-btn--compare.is-active {
+.volt-product__action-btn--compare.is-wished {
   color: var(--volt-blue);
 }

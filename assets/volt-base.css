@@ -462,6 +462,10 @@ h6 {
 .volt-card__wishlist:hover svg {
   stroke: var(--volt-error);
 }
+.volt-card__wishlist.is-wished {
+  opacity: 1;
+}
+
 .volt-card__wishlist.is-wished svg {
   fill: var(--volt-error);
   stroke: var(--volt-error);

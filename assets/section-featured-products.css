@@ -144,6 +144,10 @@
   stroke: var(--volt-error);
 }
 
+.volt-featured .volt-card__wishlist.is-wished {
+  opacity: 1;
+}
+
 .volt-featured .volt-card__wishlist.is-wished svg {
   fill: var(--volt-error);
   stroke: var(--volt-error);

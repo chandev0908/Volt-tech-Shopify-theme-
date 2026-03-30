@@ -84,7 +84,7 @@
 
   /* ── Update a single button ── */
   function updateBtn(btn, isActive) {
-    btn.classList.toggle('is-active', isActive);
+    btn.classList.toggle('is-wished', isActive);
     btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     var label = btn.dataset.productTitle
       ? (isActive ? 'Remove from wishlist' : 'Add to wishlist') + ': ' + btn.dataset.productTitle
@@ -192,7 +192,7 @@
           '<div class="volt-card__img">' + imgHtml + '</div>' +
           '<div class="volt-card__overlay" aria-hidden="true"></div>' +
           '</a>' +
-          '<button class="volt-card__wishlist is-active" type="button" ' +
+          '<button class="volt-card__wishlist is-wished" type="button" ' +
           'data-wishlist-btn data-product-id="' + p.id + '" ' +
           'aria-label="Remove ' + escapeHtml(p.title) + ' from wishlist" aria-pressed="true">' +
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
