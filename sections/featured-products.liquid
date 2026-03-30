@@ -3,7 +3,10 @@
 
 {%- liquid
   assign tab_blocks = section.blocks | where: 'type', 'tab'
-  assign has_tabs = tab_blocks.size > 0
+  assign has_tabs = false
+  if tab_blocks.size > 0
+    assign has_tabs = true
+  endif
 
   if has_tabs
     assign active_collection = collections[tab_blocks.first.settings.collection]

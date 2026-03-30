@@ -88,8 +88,8 @@ All interactive elements use `aria-expanded`, `aria-haspopup`, `aria-controls`.
 1. ~~`sections/hero.liquid`~~ — **Done**
 2. ~~`sections/featured-products.liquid`~~ — **Done** (+ `snippets/volt-product-card.liquid`)
 3. ~~`sections/footer.liquid`~~ — **Done**
-4. `sections/main-product.liquid` — Spec table (metafields), Judge.me reviews, sticky ATC, subscription UI
-5. `sections/main-collection.liquid` — Filters, sort, view toggle
+4. ~~`sections/main-product.liquid`~~ — **Done**
+5. ~~`sections/main-collection.liquid`~~ — **Done** (volt-collection.css, banner + grid, facets.js integration, view toggle)
 6. `sections/main-cart.liquid` — Cart page
 7. `snippets/cart-drawer.liquid` — Section Rendering API cart drawer (no page reload)
 8. `snippets/mobile-drawer.liquid` — Mobile menu

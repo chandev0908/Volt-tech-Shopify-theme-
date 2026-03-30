@@ -162,7 +162,7 @@
                         value="{{ value | escape }}"
                         class="sr-only volt-product__option-input"
                         form="{{ product_form_id }}"
-                        {% if product.selected_or_first_available_variant.options[option.position | minus: 1] == value %}
+                        {% if product.selected_or_first_available_variant.options[forloop.parentloop.index0] == value %}
                           checked
                         {% endif %}
                         {% if option_disabled %}disabled{% endif %}
