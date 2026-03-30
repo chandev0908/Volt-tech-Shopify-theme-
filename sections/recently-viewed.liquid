@@ -1,0 +1,80 @@
+{{ 'volt-recently-viewed.js' | asset_url | script_tag }}
+
+{%- comment -%}
+  Tracker hidden element — on product pages this saves the current product to localStorage.
+  On non-product pages it's omitted so no stale data is written.
+{%- endcomment -%}
+{%- if request.page_type == 'product' -%}
+  {%- assign rv_variant = product.selected_or_first_available_variant -%}
+  {%- assign rv_image = product.featured_image | image_url: width: 600 -%}
+  <script
+    id="volt-rv-tracker"
+    type="text/plain"
+    data-product='{"id":{{ product.id | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"image":{{ rv_image | json }},"price":{{ rv_variant.price | json }},"compare_price":{{ rv_variant.compare_at_price | json }},"vendor":{{ product.vendor | json }}}'
+  ></script>
+{%- endif -%}
+
+<section
+  class="volt-rv-section"
+  id="volt-rv-section-{{ section.id }}"
+  aria-labelledby="volt-rv-title-{{ section.id }}"
+>
+  <div class="volt-container">
+
+    <div class="volt-section__header">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="volt-section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2
+          class="volt-section__title"
+          id="volt-rv-title-{{ section.id }}"
+        >
+          {{- section.settings.title | escape -}}
+        </h2>
+      </div>
+    </div>
+
+    <volt-recently-viewed
+      data-current-id="{{ product.id | default: '' }}"
+      data-limit="{{ section.settings.products_to_show }}"
+    ></volt-recently-viewed>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Recently Viewed",
+  "tag": "section",
+  "class": "section-volt-recently-viewed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Your History"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Recently Viewed"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 8,
+      "step": 2,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently Viewed"
+    }
+  ]
+}
+{% endschema %}

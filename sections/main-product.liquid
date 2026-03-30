@@ -1,4 +1,5 @@
 {{ 'volt-product.css' | asset_url | stylesheet_tag }}
+{{ 'volt-recently-viewed.js' | asset_url | script_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 {{ 'component-rating.css' | asset_url | stylesheet_tag }}
@@ -51,6 +52,13 @@
 
   assign breadcrumb_col = collection | default: product.collections.first
 -%}
+
+{%- assign rv_img = product.featured_image | image_url: width: 600 -%}
+<script
+  id="volt-rv-tracker"
+  type="text/plain"
+  data-product='{"id":{{ product.id | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"image":{{ rv_img | json }},"price":{{ current_variant.price | json }},"compare_price":{{ current_variant.compare_at_price | json }},"vendor":{{ product.vendor | json }}}'
+></script>
 
 <product-info
   id="MainProduct-{{ section.id }}"
@@ -208,6 +216,141 @@
             </noscript>
           {%- endunless -%}
 
+          {%- comment -%} Subscription / selling plan picker {%- endcomment -%}
+          {%- if product.selling_plan_groups.size > 0 -%}
+            <div class="volt-product__subscribe" id="volt-subscribe-{{ section.id }}">
+
+              {%- comment -%} Purchase type toggle {%- endcomment -%}
+              <div
+                class="volt-subscribe__toggle"
+                role="group"
+                aria-label="Purchase type"
+              >
+                <label class="volt-subscribe__option">
+                  <input
+                    type="radio"
+                    name="volt-purchase-type-{{ section.id }}"
+                    value="one_time"
+                    class="sr-only"
+                    checked
+                  >
+                  <span class="volt-subscribe__option-label">
+                    One-time purchase
+                  </span>
+                </label>
+                <label class="volt-subscribe__option">
+                  <input
+                    type="radio"
+                    name="volt-purchase-type-{{ section.id }}"
+                    value="subscription"
+                    class="sr-only"
+                  >
+                  <span class="volt-subscribe__option-label">
+                    Subscribe
+                    {%- assign max_pct = 0 -%}
+                    {%- for group in product.selling_plan_groups -%}
+                      {%- for plan in group.selling_plans -%}
+                        {%- for price_adjustment in plan.price_adjustments -%}
+                          {%- if price_adjustment.value_type == 'percentage' and price_adjustment.value > max_pct -%}
+                            {%- assign max_pct = price_adjustment.value -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endfor -%}
+                    {%- endfor -%}
+                    {%- if max_pct > 0 -%}
+                      <span class="volt-subscribe__save-badge">Save {{ max_pct }}%</span>
+                    {%- endif -%}
+                  </span>
+                </label>
+              </div>
+
+              {%- comment -%} Selling plan selector (shown when subscribe is selected) {%- endcomment -%}
+              <div class="volt-subscribe__plans" id="volt-subscribe-plans-{{ section.id }}" hidden>
+                {%- for group in product.selling_plan_groups -%}
+                  {%- if group.name != blank -%}
+                    <p class="volt-subscribe__group-name">{{ group.name | escape }}</p>
+                  {%- endif -%}
+                  <div class="volt-subscribe__plan-options" role="radiogroup" aria-label="{{ group.name | default: 'Delivery frequency' | escape }}">
+                    {%- for plan in group.selling_plans -%}
+                      <label class="volt-subscribe__plan{% if forloop.first %} is-selected{% endif %}">
+                        <input
+                          type="radio"
+                          name="selling_plan"
+                          value="{{ plan.id }}"
+                          form="{{ product_form_id }}"
+                          class="sr-only volt-subscribe__plan-input"
+                          {% if forloop.first %}checked{% endif %}
+                        >
+                        <span class="volt-subscribe__plan-label">
+                          {{ plan.name | escape }}
+                          {%- for adj in plan.price_adjustments -%}
+                            {%- if adj.value_type == 'percentage' -%}
+                              <span class="volt-subscribe__plan-discount">−{{ adj.value }}%</span>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+
+            </div>
+
+            <script>
+            (function () {
+              var wrap = document.getElementById('volt-subscribe-{{ section.id }}');
+              if (!wrap) return;
+
+              var plansPanel = document.getElementById('volt-subscribe-plans-{{ section.id }}');
+              var radios = wrap.querySelectorAll('input[name="volt-purchase-type-{{ section.id }}"]');
+              var sellingPlanInputs = wrap.querySelectorAll('.volt-subscribe__plan-input');
+              var form = document.getElementById('{{ product_form_id }}');
+              var existingSP = form && form.querySelector('input[name="selling_plan"]');
+
+              function setType(type) {
+                var isSub = type === 'subscription';
+                plansPanel.hidden = !isSub;
+                // Add/remove selling_plan value from form
+                if (!isSub) {
+                  // Remove selling_plan so one-time goes through
+                  sellingPlanInputs.forEach(function (i) { i.removeAttribute('name'); });
+                } else {
+                  sellingPlanInputs.forEach(function (i) { i.setAttribute('name', 'selling_plan'); });
+                  // Check first plan
+                  var first = wrap.querySelector('.volt-subscribe__plan-input');
+                  if (first) first.checked = true;
+                }
+              }
+
+              radios.forEach(function (radio) {
+                radio.addEventListener('change', function () {
+                  if (radio.checked) setType(radio.value);
+                });
+                // Visual selected state
+                radio.closest('.volt-subscribe__option').classList.toggle('is-selected', radio.checked);
+              });
+
+              wrap.addEventListener('change', function (e) {
+                if (e.target.name && e.target.name.indexOf('volt-purchase-type') === 0) {
+                  radios.forEach(function (r) {
+                    r.closest('.volt-subscribe__option').classList.toggle('is-selected', r.checked);
+                  });
+                }
+                // Plan option selected
+                if (e.target.classList.contains('volt-subscribe__plan-input')) {
+                  wrap.querySelectorAll('.volt-subscribe__plan').forEach(function (lbl) {
+                    lbl.classList.toggle('is-selected', lbl.querySelector('.volt-subscribe__plan-input').checked);
+                  });
+                }
+              });
+
+              // Init
+              setType('one_time');
+            })();
+            </script>
+          {%- endif -%}
+
           {%- comment -%} Product form: qty + ATC {%- endcomment -%}
           <product-form
             data-section-id="{{ section.id }}"
@@ -290,6 +433,11 @@
 
             </form>
           </product-form>
+
+          {%- comment -%} Back-in-stock (shown when variant is unavailable) {%- endcomment -%}
+          {%- unless current_variant.available -%}
+            {%- render 'back-in-stock', product: product, variant: current_variant -%}
+          {%- endunless -%}
 
           {%- comment -%} Wishlist + compare {%- endcomment -%}
           <div class="volt-product__secondary-actions">

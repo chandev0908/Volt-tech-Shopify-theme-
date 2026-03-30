@@ -115,6 +115,11 @@
 </script>
 
 {%- comment -%} WebSite — enables Sitelinks Searchbox {%- endcomment -%}
+{%- comment -%}
+  Use capture to build the URL template so Liquid doesn't parse {search_term_string}
+  as a Liquid variable inside an append filter string.
+{%- endcomment -%}
+{%- capture search_url_template %}{{ request.origin }}/search?type=product&q={search_term_string}{%- endcapture -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -125,7 +130,7 @@
     "@type": "SearchAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": {{ request.origin | append: '/search?type=product&q={search_term_string}' | json }}
+      "urlTemplate": {{ search_url_template | json }}
     },
     "query-input": "required name=search_term_string"
   }
