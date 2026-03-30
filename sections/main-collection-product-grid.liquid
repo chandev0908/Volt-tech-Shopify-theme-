@@ -2,6 +2,7 @@
 {{ 'volt-collection.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'volt-wishlist.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
   assign sort_by = collection.sort_by | default: collection.default_sort_by
