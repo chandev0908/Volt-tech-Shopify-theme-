@@ -83,17 +83,17 @@ All interactive elements use `aria-expanded`, `aria-haspopup`, `aria-controls`.
 | `assets/volt-compare.js` | Product comparison (up to 3 items) with floating bar |
 | `sections/header.liquid` | Mega menu, predictive search, dark mode toggle, ARIA |
 
-## What Still Needs Building
+## What's Built (All Core Sections Complete)
 
 1. ~~`sections/hero.liquid`~~ — **Done**
 2. ~~`sections/featured-products.liquid`~~ — **Done** (+ `snippets/volt-product-card.liquid`)
 3. ~~`sections/footer.liquid`~~ — **Done**
 4. ~~`sections/main-product.liquid`~~ — **Done**
-5. ~~`sections/main-collection.liquid`~~ — **Done** (volt-collection.css, banner + grid, facets.js integration, view toggle)
-6. `sections/main-cart.liquid` — Cart page
-7. `snippets/cart-drawer.liquid` — Section Rendering API cart drawer (no page reload)
-8. `snippets/mobile-drawer.liquid` — Mobile menu
-9. `snippets/meta-tags.liquid` — SEO meta tags + JSON-LD structured data
+5. ~~`sections/main-collection.liquid`~~ — **Done** (`volt-collection.css`, banner + grid, facets.js, view toggle)
+6. ~~`sections/main-cart.liquid`~~ — **Done** (`main-cart-items` + `main-cart-footer`, `volt-cart.css`)
+7. ~~`snippets/cart-drawer.liquid`~~ — **Done** (SRA slide-out panel, all Dawn cart.js hooks)
+8. ~~`snippets/mobile-drawer.liquid`~~ — **Done** (built into `sections/header.liquid`)
+9. ~~`snippets/meta-tags.liquid`~~ — **Done** (OG, Twitter cards, JSON-LD: Product, Collection, Article, WebPage, Organization, WebSite, BreadcrumbList)
 
 ## Shopify / App Details
 
