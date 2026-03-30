@@ -1,0 +1,119 @@
+{% comment %}
+  Back-in-stock email notification form.
+  Usage (in main-product.liquid when variant is unavailable):
+    {% render 'back-in-stock', product: product, variant: current_variant %}
+
+  Submits to Shopify's built-in contact form with tags the merchant can use
+  to trigger Klaviyo / Email flows via the customer email tag.
+{% endcomment %}
+
+{%- assign bis_form_id = 'volt-bis-' | append: variant.id | append: '-' | append: section.id -%}
+
+<div
+  class="volt-bis"
+  id="volt-bis-{{ variant.id }}"
+  aria-live="polite"
+>
+  <div class="volt-bis__intro">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+      <line x1="6" y1="1" x2="6" y2="4"/>
+      <line x1="10" y1="1" x2="10" y2="4"/>
+      <line x1="14" y1="1" x2="14" y2="4"/>
+    </svg>
+    <p class="volt-bis__label">Notify me when available</p>
+  </div>
+
+  <form
+    id="{{ bis_form_id }}"
+    class="volt-bis__form"
+    action="/contact#{{ bis_form_id }}"
+    method="post"
+    novalidate
+  >
+    <input type="hidden" name="form_type" value="contact">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="contact[tags]" value="back-in-stock,product-{{ product.id }},variant-{{ variant.id }}">
+    <input type="hidden" name="contact[subject]" value="Back in stock: {{ product.title | escape }}{% unless product.has_only_default_variant %} — {{ variant.title | escape }}{% endunless %}">
+    <input type="hidden" name="contact[body]"
+      value="Please notify me when {{ product.title | escape }}{% unless product.has_only_default_variant %} ({{ variant.title | escape }}){% endunless %} is back in stock. Product URL: {{ request.origin }}{{ product.url }}"
+    >
+
+    <div class="volt-bis__fields">
+      <label for="{{ bis_form_id }}-email" class="sr-only">Your email</label>
+      <input
+        type="email"
+        id="{{ bis_form_id }}-email"
+        name="contact[email]"
+        class="volt-bis__input"
+        placeholder="your@email.com"
+        required
+        autocomplete="email"
+        inputmode="email"
+      >
+      <button type="submit" class="volt-bis__submit volt-btn volt-btn--secondary volt-btn--sm">
+        Notify Me
+      </button>
+    </div>
+
+    <p class="volt-bis__privacy">
+      We'll only email you when this product is restocked.
+    </p>
+  </form>
+
+  <div class="volt-bis__success" hidden aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    You're on the list — we'll let you know!
+  </div>
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById('{{ bis_form_id }}');
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var email = form.querySelector('input[type="email"]').value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      form.querySelector('input[type="email"]').focus();
+      return;
+    }
+
+    var btn = form.querySelector('.volt-bis__submit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    var data = new FormData(form);
+
+    fetch('/contact', {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body: data,
+    })
+      .then(function (r) {
+        if (r.ok) {
+          var wrapper = document.getElementById('volt-bis-{{ variant.id }}');
+          var formEl = wrapper.querySelector('.volt-bis__form');
+          var success = wrapper.querySelector('.volt-bis__success');
+          formEl.hidden = true;
+          formEl.setAttribute('aria-hidden', 'true');
+          success.hidden = false;
+          success.setAttribute('aria-hidden', 'false');
+        } else {
+          btn.textContent = 'Notify Me';
+          btn.disabled = false;
+          btn.insertAdjacentHTML('afterend', '<p style="color:#ff5050;font-size:11px;margin:4px 0 0">Something went wrong. Please try again.</p>');
+        }
+      })
+      .catch(function () {
+        btn.textContent = 'Notify Me';
+        btn.disabled = false;
+      });
+  });
+})();
+</script>

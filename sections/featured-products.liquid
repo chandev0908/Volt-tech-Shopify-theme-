@@ -1,0 +1,273 @@
+{{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'volt-wishlist.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign tab_blocks = section.blocks | where: 'type', 'tab'
+  assign has_tabs = false
+  if tab_blocks.size > 0
+    assign has_tabs = true
+  endif
+
+  if has_tabs
+    assign active_collection = collections[tab_blocks.first.settings.collection]
+  else
+    assign active_collection = collections[section.settings.collection]
+  endif
+
+  assign products_to_show = section.settings.products_to_show
+
+  assign grid_class = 'volt-featured__grid'
+  if section.settings.columns_desktop == '3'
+    assign grid_class = 'volt-featured__grid volt-featured__grid--3col'
+  endif
+
+  assign thirty_days_ago = 'now' | date: '%s' | minus: 2592000
+-%}
+
+<section
+  class="volt-featured"
+  id="volt-featured-{{ section.id }}"
+  aria-labelledby="volt-featured-title-{{ section.id }}"
+>
+  <div class="volt-container">
+
+    {%- comment -%} Section header {%- endcomment -%}
+    <div class="volt-section__header">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="volt-section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2
+          class="volt-section__title"
+          id="volt-featured-title-{{ section.id }}"
+        >
+          {{- section.settings.title | escape -}}
+        </h2>
+      </div>
+
+      {%- if section.settings.link_text != blank -%}
+        <a
+          href="{{ section.settings.link_url | default: routes.all_products_collection_url }}"
+          class="volt-section__link"
+          aria-label="{{ section.settings.link_text | escape }}"
+        >
+          {{- section.settings.link_text | escape -}}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Tab + grid wrapper {%- endcomment -%}
+    <volt-product-tabs>
+
+      {%- comment -%} Collection tabs {%- endcomment -%}
+      {%- if has_tabs -%}
+        <div
+          class="volt-featured__tabs"
+          role="tablist"
+          aria-label="Product collections"
+        >
+          {%- for block in tab_blocks -%}
+            {%- assign tab_col = collections[block.settings.collection] -%}
+            <button
+              class="volt-pill{% if forloop.first %} is-active{% endif %}"
+              role="tab"
+              data-tab="{{ block.id }}"
+              aria-selected="{{ forloop.first }}"
+              aria-controls="panel-{{ block.id }}-{{ section.id }}"
+              id="tab-{{ block.id }}-{{ section.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.label | default: tab_col.title | escape -}}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Product grids {%- endcomment -%}
+      {%- if has_tabs -%}
+
+        {%- for block in tab_blocks -%}
+          {%- assign tab_col = collections[block.settings.collection] -%}
+          <div
+            class="{{ grid_class }}"
+            id="panel-{{ block.id }}-{{ section.id }}"
+            role="tabpanel"
+            aria-labelledby="tab-{{ block.id }}-{{ section.id }}"
+            {% unless forloop.first %}hidden{% endunless %}
+          >
+            {%- if tab_col != blank -%}
+              {%- for product in tab_col.products limit: products_to_show -%}
+                {%- render 'volt-product-card', product: product, thirty_days_ago: thirty_days_ago -%}
+              {%- else -%}
+                <p class="volt-featured__empty">No products in this collection.</p>
+              {%- endfor -%}
+            {%- else -%}
+              <p class="volt-featured__empty">Select a collection in the block settings.</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+
+      {%- else -%}
+
+        <div class="{{ grid_class }}">
+          {%- if active_collection != blank -%}
+            {%- for product in active_collection.products limit: products_to_show -%}
+              {%- render 'volt-product-card', product: product, thirty_days_ago: thirty_days_ago -%}
+            {%- else -%}
+              <p class="volt-featured__empty">No products found in this collection.</p>
+            {%- endfor -%}
+          {%- else -%}
+            <p class="volt-featured__empty">Select a collection in section settings.</p>
+          {%- endif -%}
+        </div>
+
+      {%- endif -%}
+
+    </volt-product-tabs>
+
+    {%- comment -%} View all footer {%- endcomment -%}
+    {%- if section.settings.show_view_all and section.settings.link_url != blank -%}
+      <div class="volt-featured__footer">
+        <a
+          href="{{ section.settings.link_url }}"
+          class="volt-btn volt-btn--outline volt-btn--lg"
+        >
+          {{ section.settings.link_text | default: 'View All Products' | escape }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  if (!customElements.get('volt-product-tabs')) {
+    class VoltProductTabs extends HTMLElement {
+      connectedCallback() {
+        this.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-tab]');
+          if (!btn) return;
+
+          const tabId = btn.dataset.tab;
+
+          // Update active pill
+          this.querySelectorAll('[data-tab]').forEach((b) => {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+
+          // Show active panel, hide others
+          this.querySelectorAll('[role="tabpanel"]').forEach((panel) => {
+            panel.hidden = panel.id !== `panel-${tabId}-{{ section.id }}`;
+          });
+        });
+      }
+    }
+    customElements.define('volt-product-tabs', VoltProductTabs);
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "class": "section-volt-featured-products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Top Picks"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Featured Products"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "View all link text",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "View all link URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all button at bottom",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Used when no Collection Tab blocks are added."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 12,
+      "step": 4,
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "default": "4",
+      "options": [
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Collection tab",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab label",
+          "info": "Leave blank to use collection title."
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}

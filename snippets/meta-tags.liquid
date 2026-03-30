@@ -1,29 +1,59 @@
+{% comment %}
+  Volt — SEO meta tags + JSON-LD structured data
+  Rendered in <head> via layout/theme.liquid
+{% endcomment %}
+
 {%- liquid
-  assign og_title = page_title | default: shop.name
-  assign og_url = canonical_url | default: request.origin
-  assign og_type = 'website'
+  assign og_title       = page_title | default: shop.name
+  assign og_url         = canonical_url | default: request.origin
+  assign og_type        = 'website'
   assign og_description = page_description | default: shop.description | default: shop.name
+  assign og_image       = ''
+  assign og_image_alt   = shop.name
 
-  if request.page_type == 'product'
-    assign og_type = 'product'
-  elsif request.page_type == 'article'
-    assign og_type = 'article'
-  elsif request.page_type == 'password'
-    assign og_url = request.origin
+  case request.page_type
+    when 'product'
+      assign og_type    = 'product'
+      if product.featured_image
+        assign og_image     = product.featured_image | image_url: width: 1200
+        assign og_image_alt = product.featured_image.alt | default: product.title
+      endif
+    when 'article'
+      assign og_type    = 'article'
+      if article.image
+        assign og_image     = article.image | image_url: width: 1200
+        assign og_image_alt = article.image.alt | default: article.title
+      endif
+    when 'collection'
+      if collection.featured_image
+        assign og_image     = collection.featured_image | image_url: width: 1200
+        assign og_image_alt = collection.featured_image.alt | default: collection.title
+      endif
+    when 'password'
+      assign og_url = request.origin
+  endcase
+
+  if og_image == '' and page_image
+    assign og_image     = page_image | image_url: width: 1200
+    assign og_image_alt = page_image.alt | default: og_title
   endif
-%}
+-%}
 
+{%- comment -%} ── Open Graph ── {%- endcomment -%}
 <meta property="og:site_name" content="{{ shop.name }}">
 <meta property="og:url" content="{{ og_url }}">
 <meta property="og:title" content="{{ og_title | escape }}">
 <meta property="og:type" content="{{ og_type }}">
 <meta property="og:description" content="{{ og_description | escape }}">
+<meta property="og:locale" content="{{ request.locale.iso_code | replace: '-', '_' }}">
 
-{%- if page_image -%}
-  <meta property="og:image" content="http:{{ page_image | image_url }}">
-  <meta property="og:image:secure_url" content="https:{{ page_image | image_url }}">
-  <meta property="og:image:width" content="{{ page_image.width }}">
-  <meta property="og:image:height" content="{{ page_image.height }}">
+{%- if og_image != '' -%}
+  <meta property="og:image" content="https:{{ og_image }}">
+  <meta property="og:image:alt" content="{{ og_image_alt | escape }}">
+  {%- if page_image -%}
+    <meta property="og:image:width" content="{{ page_image.width }}">
+    <meta property="og:image:height" content="{{ page_image.height }}">
+  {%- endif -%}
 {%- endif -%}
 
 {%- if request.page_type == 'product' -%}
@@ -31,9 +61,318 @@
   <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
 {%- endif -%}
 
+{%- comment -%} ── Twitter / X card ── {%- endcomment -%}
 {%- if settings.social_twitter_link != blank -%}
   <meta name="twitter:site" content="{{ settings.social_twitter_link | split: 'twitter.com/' | last | prepend: '@' }}">
 {%- endif -%}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ og_title | escape }}">
 <meta name="twitter:description" content="{{ og_description | escape }}">
+{%- if og_image != '' -%}
+  <meta name="twitter:image" content="https:{{ og_image }}">
+  <meta name="twitter:image:alt" content="{{ og_image_alt | escape }}">
+{%- endif -%}
+
+{%- comment -%} ── JSON-LD Structured Data ── {%- endcomment -%}
+
+{%- comment -%} Organization — always present {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  "url": {{ request.origin | json }},
+  "logo": {
+    "@type": "ImageObject",
+    "url": {{ request.origin | append: '/assets/logo.png' | json }}
+  }
+  {%- if settings.social_twitter_link != blank
+    or settings.social_facebook_link != blank
+    or settings.social_instagram_link != blank
+    or settings.social_youtube_link != blank
+  -%}
+  ,"sameAs": [
+    {%- assign social_links = '' -%}
+    {%- if settings.social_twitter_link != blank -%}
+      {%- assign social_links = social_links | append: settings.social_twitter_link | append: '|' -%}
+    {%- endif -%}
+    {%- if settings.social_facebook_link != blank -%}
+      {%- assign social_links = social_links | append: settings.social_facebook_link | append: '|' -%}
+    {%- endif -%}
+    {%- if settings.social_instagram_link != blank -%}
+      {%- assign social_links = social_links | append: settings.social_instagram_link | append: '|' -%}
+    {%- endif -%}
+    {%- if settings.social_youtube_link != blank -%}
+      {%- assign social_links = social_links | append: settings.social_youtube_link | append: '|' -%}
+    {%- endif -%}
+    {%- assign social_array = social_links | split: '|' | compact -%}
+    {%- for link in social_array -%}
+      {{ link | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+  {%- endif -%}
+}
+</script>
+
+{%- comment -%} WebSite — enables Sitelinks Searchbox {%- endcomment -%}
+{%- comment -%}
+  Use capture to build the URL template so Liquid doesn't parse {search_term_string}
+  as a Liquid variable inside an append filter string.
+{%- endcomment -%}
+{%- capture search_url_template %}{{ request.origin }}/search?type=product&q={search_term_string}{%- endcapture -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ request.origin | json }},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": {{ search_url_template | json }}
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+{%- comment -%} ── Page-type specific schemas ── {%- endcomment -%}
+
+{%- if request.page_type == 'product' -%}
+  {%- liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign availability = 'https://schema.org/OutOfStock'
+    if current_variant.available
+      assign availability = 'https://schema.org/InStock'
+    endif
+
+    assign breadcrumb_col = collection | default: product.collections.first
+
+    assign spec_processor    = product.metafields.specs.processor.value
+    assign spec_ram          = product.metafields.specs.ram.value
+    assign spec_storage      = product.metafields.specs.storage.value
+    assign spec_display      = product.metafields.specs.display.value
+    assign spec_battery      = product.metafields.specs.battery.value
+    assign spec_connectivity = product.metafields.specs.connectivity.value
+    assign spec_weight       = product.metafields.specs.weight.value
+    assign spec_warranty     = product.metafields.specs.warranty.value
+  -%}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    "description": {{ product.description | strip_html | truncatewords: 200 | json }},
+    {%- if product.vendor != blank -%}
+    "brand": {
+      "@type": "Brand",
+      "name": {{ product.vendor | json }}
+    },
+    {%- endif -%}
+    {%- if current_variant.sku != blank -%}
+    "sku": {{ current_variant.sku | json }},
+    {%- endif -%}
+    {%- if product.images.size > 0 -%}
+    "image": [
+      {%- for image in product.images limit: 5 -%}
+        {{ image | image_url: width: 1200 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ],
+    {%- endif -%}
+    "offers": {
+      "@type": "Offer",
+      "url": {{ request.origin | append: product.url | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "price": {{ current_variant.price | divided_by: 100.0 | json }},
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+      "priceValidUntil": "{{ 'now' | date: '%Y' | plus: 1 }}-12-31",
+      {%- endif -%}
+      "availability": {{ availability | json }},
+      "itemCondition": "https://schema.org/NewCondition",
+      "seller": {
+        "@type": "Organization",
+        "name": {{ shop.name | json }}
+      }
+    }
+    {%- comment -%} Additional specs as additionalProperty {%- endcomment -%}
+    {%- assign has_any_spec = false -%}
+    {%- if spec_processor != blank or spec_ram != blank or spec_storage != blank or spec_display != blank or spec_battery != blank or spec_connectivity != blank or spec_weight != blank or spec_warranty != blank -%}
+      {%- assign has_any_spec = true -%}
+    {%- endif -%}
+    {%- if has_any_spec -%}
+    ,"additionalProperty": [
+      {%- assign spec_items = '' -%}
+      {%- if spec_processor != blank -%}{%- assign spec_items = spec_items | append: 'processor|' | append: spec_processor | append: ';;' -%}{%- endif -%}
+      {%- if spec_ram != blank -%}{%- assign spec_items = spec_items | append: 'RAM|' | append: spec_ram | append: ';;' -%}{%- endif -%}
+      {%- if spec_storage != blank -%}{%- assign spec_items = spec_items | append: 'Storage|' | append: spec_storage | append: ';;' -%}{%- endif -%}
+      {%- if spec_display != blank -%}{%- assign spec_items = spec_items | append: 'Display|' | append: spec_display | append: ';;' -%}{%- endif -%}
+      {%- if spec_battery != blank -%}{%- assign spec_items = spec_items | append: 'Battery|' | append: spec_battery | append: ';;' -%}{%- endif -%}
+      {%- if spec_connectivity != blank -%}{%- assign spec_items = spec_items | append: 'Connectivity|' | append: spec_connectivity | append: ';;' -%}{%- endif -%}
+      {%- if spec_weight != blank -%}{%- assign spec_items = spec_items | append: 'Weight|' | append: spec_weight | append: ';;' -%}{%- endif -%}
+      {%- if spec_warranty != blank -%}{%- assign spec_items = spec_items | append: 'Warranty|' | append: spec_warranty | append: ';;' -%}{%- endif -%}
+      {%- assign spec_pairs = spec_items | split: ';;' | compact -%}
+      {%- for pair in spec_pairs -%}
+        {%- assign kv = pair | split: '|' -%}
+        {
+          "@type": "PropertyValue",
+          "name": {{ kv[0] | json }},
+          "value": {{ kv[1] | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+    {%- endif -%}
+  }
+  </script>
+
+  {%- comment -%} BreadcrumbList for product {%- endcomment -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ request.origin | json }}
+      }
+      {%- if breadcrumb_col != blank -%}
+      ,{
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ breadcrumb_col.title | json }},
+        "item": {{ request.origin | append: breadcrumb_col.url | json }}
+      }
+      ,{
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ product.title | json }},
+        "item": {{ request.origin | append: product.url | json }}
+      }
+      {%- else -%}
+      ,{
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ product.title | json }},
+        "item": {{ request.origin | append: product.url | json }}
+      }
+      {%- endif -%}
+    ]
+  }
+  </script>
+
+{%- elsif request.page_type == 'collection' -%}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": {{ collection.title | json }},
+    "url": {{ request.origin | append: collection.url | json }}
+    {%- if collection.description != blank -%}
+    ,"description": {{ collection.description | strip_html | truncatewords: 200 | json }}
+    {%- endif -%}
+    {%- if collection.featured_image -%}
+    ,"image": {{ collection.featured_image | image_url: width: 1200 | prepend: 'https:' | json }}
+    {%- endif -%}
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ request.origin | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ collection.title | json }},
+        "item": {{ request.origin | append: collection.url | json }}
+      }
+    ]
+  }
+  </script>
+
+{%- elsif request.page_type == 'article' -%}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": {{ article.title | json }},
+    "url": {{ request.origin | append: article.url | json }},
+    {%- if article.excerpt_or_content != blank -%}
+    "description": {{ article.excerpt_or_content | strip_html | truncatewords: 200 | json }},
+    {%- endif -%}
+    {%- if article.image -%}
+    "image": {{ article.image | image_url: width: 1200 | prepend: 'https:' | json }},
+    {%- endif -%}
+    "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "dateModified": {{ article.updated_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "author": {
+      "@type": "Person",
+      "name": {{ article.author | json }}
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | json }}
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": {{ request.origin | append: article.url | json }}
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ request.origin | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ blog.title | json }},
+        "item": {{ request.origin | append: blog.url | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ article.title | json }},
+        "item": {{ request.origin | append: article.url | json }}
+      }
+    ]
+  }
+  </script>
+
+{%- elsif request.page_type == 'page' -%}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": {{ page.title | json }},
+    "url": {{ request.origin | append: page.url | json }}
+    {%- if page.content != blank -%}
+    ,"description": {{ page.content | strip_html | truncatewords: 200 | json }}
+    {%- endif -%}
+  }
+  </script>
+
+{%- endif -%}

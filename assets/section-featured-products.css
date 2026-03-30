@@ -1,0 +1,230 @@
+/* ─── Volt Featured Products ──────────────────────────────────────────────── */
+
+.volt-featured {
+  background: var(--volt-dark);
+  padding: 80px 0;
+  position: relative;
+}
+
+/* Top accent line */
+.volt-featured::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 48px;
+  right: 48px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ─── Section header overrides for dark bg ──── */
+
+.volt-featured .volt-section__title {
+  color: #ffffff;
+}
+
+.volt-featured .volt-section__eyebrow {
+  color: var(--volt-blue);
+}
+
+.volt-featured .volt-section__eyebrow::before {
+  background: var(--volt-blue);
+}
+
+.volt-featured .volt-section__link {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.volt-featured .volt-section__link:hover {
+  color: var(--volt-blue);
+  gap: 10px;
+}
+
+/* ─── Collection tabs ───────────────────────── */
+
+.volt-featured__tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+/* Pill overrides for dark background */
+.volt-featured__tabs .volt-pill {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+}
+
+.volt-featured__tabs .volt-pill:hover {
+  border-color: var(--volt-blue);
+  color: var(--volt-blue);
+  background: rgba(0, 102, 255, 0.08);
+}
+
+.volt-featured__tabs .volt-pill.is-active {
+  background: var(--volt-blue);
+  border-color: var(--volt-blue);
+  color: #ffffff;
+}
+
+/* ─── Product grid ──────────────────────────── */
+
+.volt-featured__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.volt-featured__grid--3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ─── Dark card overrides ───────────────────── */
+
+.volt-featured .volt-card {
+  background: #111111;
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.volt-featured .volt-card:hover {
+  border-color: var(--volt-blue);
+  box-shadow: var(--volt-shadow-blue);
+}
+
+.volt-featured .volt-card__image-wrap {
+  background: #0d0d0d;
+}
+
+.volt-featured .volt-card__name {
+  color: #ffffff;
+}
+
+.volt-featured .volt-card__name:hover {
+  color: var(--volt-blue);
+}
+
+.volt-featured .volt-card__brand {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.volt-featured .volt-card__subtitle {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.volt-featured .volt-card__price {
+  color: #ffffff;
+}
+
+.volt-featured .volt-card__compare {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.volt-featured .volt-card__footer {
+  border-top-color: rgba(255, 255, 255, 0.07);
+}
+
+.volt-featured .volt-card__wishlist {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+}
+
+.volt-featured .volt-card:hover .volt-card__wishlist {
+  opacity: 1;
+}
+
+.volt-featured .volt-card__wishlist svg {
+  stroke: rgba(255, 255, 255, 0.45);
+  fill: none;
+}
+
+.volt-featured .volt-card__wishlist:hover svg {
+  stroke: var(--volt-error);
+}
+
+.volt-featured .volt-card__wishlist.is-wished {
+  opacity: 1;
+}
+
+.volt-featured .volt-card__wishlist.is-wished svg {
+  fill: var(--volt-error);
+  stroke: var(--volt-error);
+}
+
+/* ─── Empty state ───────────────────────────── */
+
+.volt-featured__empty {
+  grid-column: 1 / -1;
+  padding: 64px 20px;
+  text-align: center;
+  font-family: var(--volt-font-mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.18);
+}
+
+/* ─── Footer (View All) ─────────────────────── */
+
+.volt-featured__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+/* Outline button override for dark background */
+.volt-featured .volt-btn--outline {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.volt-featured .volt-btn--outline:hover {
+  border-color: var(--volt-blue);
+  color: white;
+  background: rgba(0, 102, 255, 0.1);
+}
+
+/* ─── Responsive ────────────────────────────── */
+
+@media (max-width: 1200px) {
+  .volt-featured__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .volt-featured__grid,
+  .volt-featured__grid--3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .volt-featured {
+    padding: 56px 0;
+  }
+
+  .volt-featured::before {
+    left: 20px;
+    right: 20px;
+  }
+
+  .volt-featured__grid,
+  .volt-featured__grid--3col {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .volt-featured__tabs {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 400px) {
+  .volt-featured__grid,
+  .volt-featured__grid--3col {
+    grid-template-columns: 1fr;
+  }
+}
