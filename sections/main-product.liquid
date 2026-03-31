@@ -1,4 +1,5 @@
 {{ 'volt-product.css' | asset_url | stylesheet_tag }}
+{{ 'section-main-product.css' | asset_url | stylesheet_tag }}
 {{ 'volt-recently-viewed.js' | asset_url | script_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
@@ -9,7 +10,6 @@
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-input.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'volt-wishlist.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'volt-compare.js' | asset_url }}" defer="defer"></script>
 
 {%- if request.design_mode -%}
   <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
@@ -439,7 +439,7 @@
             {%- render 'back-in-stock', product: product, variant: current_variant -%}
           {%- endunless -%}
 
-          {%- comment -%} Wishlist + compare {%- endcomment -%}
+          {%- comment -%} Wishlist {%- endcomment -%}
           <div class="volt-product__secondary-actions">
             <button
               type="button"
@@ -450,17 +450,6 @@
             >
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               Wishlist
-            </button>
-            <button
-              type="button"
-              class="volt-product__action-btn volt-product__action-btn--compare"
-              data-compare-btn
-              data-product-id="{{ product.id }}"
-              data-product-title="{{ product.title | escape }}"
-              aria-label="Add {{ product.title | escape }} to compare"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-              Compare
             </button>
           </div>
 
